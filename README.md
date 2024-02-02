@@ -4,7 +4,8 @@ Install Python 3. XX version (latest)
 # Install dependencies with:
 
 pip install -r requirements.txt
-or
+
+# or
 
 python3 -m pip install r -requirements.txt
 
@@ -13,7 +14,7 @@ Change directory to ./railway/ folder with
 
 cd railway
 
-Run server with:
+ * Run server with: *
 
 python manage.py runserver
 
