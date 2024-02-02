@@ -14,7 +14,7 @@ Change directory to ./railway/ folder with
 
 cd railway
 
- * Run server with: *
+ * Run server with: 
 
 python manage.py runserver
 
