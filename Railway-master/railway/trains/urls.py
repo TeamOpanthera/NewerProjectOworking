@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import AllTrainsListView,Bookings,TrainsDetailView,LogoutUserView,showHome
-from .views import search,register_page,login_page,profile,BookingCancelDetailView, confirm_cancel,confirm_booking
+from .views import search,RegisterView, login_page,profile,BookingCancelDetailView, confirm_cancel,confirm_booking, ticket
 
 
 urlpatterns = [
@@ -9,8 +9,9 @@ urlpatterns = [
     path('all/',AllTrainsListView.as_view(),name = 'all_trains'),
     path('all_booked/',Bookings.as_view(),name = 'all_booked'),
     path('trains/<int:pk>',TrainsDetailView.as_view(),name ='trains'),
+    path('Ticket/',ticket,name='Ticket'),
     path('search/',search,name='search'),
-    path('register/',register_page,name='register'),
+    path('Register/',RegisterView.as_view(),name='Register'),
     path('login/',login_page,name='login'),
     path('logout/',LogoutUserView.as_view(),name='logout'),
     path('user/<slug:username>/',profile.as_view(),name='profile'),

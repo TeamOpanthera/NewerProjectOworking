@@ -1,0 +1,133 @@
+{% extends "layout.html" %} {% block content%}
+<div class="container my-4">
+    <div class="main-body">
+        <h3 class="font-weight-light my-1 text-center">Ticket Booking Page</h3>
+        <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                            <div class="mt-3">
+                                <h4>{{user.first_name| title}} {{user.last_name| title}}</h4>
+                             <p class="text-secondary mb-1">{% if user.is_superuser %} ADMINISTRATOR {% else %}
+                                Passenger {% endif %} </p>
+                             <p class="text-muted font-size-sm">{% if user.is_active %}Online{% else %} Offline {% endif %}</p>
+                             <h5 class=" text-primary-dark ">E-wallet balance : {{user.balance}} 
+                             </h5>
+                             <hr> <h5 class=" small mb-1">Click below to Recharge your E-wallet!</h5>
+                                        <hr>
+                                        <button class="btn btn-dark">Recharge Your Wallet</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Unique ID : </h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                               <h6 id="demo"></h6>
+                               <h6>
+                                <script>
+                                    
+                                const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                                function generateString(length) {
+                                let result = ' ';
+                                const charactersLength = characters.length;
+                                for ( let i = 0; i < length; i++ ) {
+                                   result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                                      }
+
+                                return result;
+                                 }
+
+                                let s=generateString(12);
+                                document.getElementById("demo").innerHTML = s;
+                                </script>
+                               </h6>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">NAME :</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{user.first_name| title}} {{user.last_name| title}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">AADHAAR ID : </h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                              XXXX XXXX {{user.aadharid}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="small mb-1">First Name</label>
+                                    {{ form.first_name }}
+                                </div>
+                            </div>
+                        <hr>
+                        <label for="name"><b>Activity Name:</b></label>          
+                            <select name="activity" id="activity" required>
+                            <script>
+                                function getActivity(tx) {
+                                    tx.executeSqllite('SELECT * FROM trains_trains', [], queryActivity, errorHandler);
+                                        function queryActivity(tx, results) {
+                                    var len = results.rows.length;
+                                    for (var i = 0; i < len; i++) {
+                                       var SelectActivity +='<option value="' + results.rows.item(i).activityID+'">'+ results.rows.item(i).ActivityName +'</Option>';
+                                    }
+                                    //SelectActivity +="</Option";
+                                    document.getElementById("activity").innerHTML =SelectActivity;
+                                }}
+                            </script>
+                            </select>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="small mb-1">Last Name</label>
+                                    {{ form.last_name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Phone Number :</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{user.phone}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Address</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{user.address}}
+                            </div>
+                        </div>
+                        <hr>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div> {% endblock content %}

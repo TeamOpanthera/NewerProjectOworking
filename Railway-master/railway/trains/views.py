@@ -2,15 +2,20 @@ from django.shortcuts import render, redirect,HttpResponse
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import TemplateView,View
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from .filters import TrainsFilter
 from django.contrib.auth.forms import UserCreationForm
-from .forms import CreateUserForm,RegisterForm,NumberForm
+from .forms import CreateUserForm,RegisterForm,LoginForm,NumberForm
 from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView
+from django.contrib.auth.hashers import make_password, check_password
+
+
 # Create your views here.
 
 from .models import Users,Trains,Booking
 from django.views.decorators.csrf import csrf_protect
-
 
 
 def showHome(request):
@@ -28,18 +33,36 @@ class TrainsDetailView(DetailView):
     template_name = 'train_details.html'
     context_object_name = 'train'
 
-    
-def register_page(request):
-    form = RegisterForm()
+class RegisterView(View):
+    form_class = RegisterForm
+    initial = {'key': 'value'}
+    template_name = 'Register.html'
 
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
+    def dispatch(self, request, *args, **kwargs):
+        # will redirect to the home page if a user tries to access the register page while logged in
+        if request.user.is_authenticated:
+            return redirect(to='/')
+
+        # else process dispatch as it otherwise normally would
+        return super(RegisterView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
         if form.is_valid():
             form.save()
-            return redirect('login')
 
-    context = {'form':form}
-    return render(request,'Register.html',context)
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'{username}, Your account has been created')
+            messages.success(request,'Please Sign in to continue')
+            return redirect(to='login')
+
+        return render(request, self.template_name, {'form': form})
+
 
 @csrf_protect
 def login_page(request):
@@ -52,6 +75,9 @@ def login_page(request):
             return redirect('home')
     context = {}
     return render(request,'login.html',context)
+    
+
+
 
 class LoginView(View):
     def post(self, request):
@@ -62,14 +88,15 @@ class LoginView(View):
         if user is not None:
             if user.is_active:
                 login(request, user)
-
+                username = form.cleaned_data.get('username')
+                messages.success(request,"WELCOME {username}")
                 return HttpResponseRedirect('/form')
             else:
                 return HttpResponse("Inactive user.")
         else:
             return HttpResponseRedirect(settings.LOGIN_URL)
 
-        return render(request, "index.html")
+        return render(request, "home.html")
 
 class LogoutUserView(View):
     def get(self,request):
@@ -144,3 +171,9 @@ def confirm_booking(request,pk):
             train.save()
             return redirect('all_booked')
     return render(request,'confirm_booking.html',{'train':train,'form':form})
+
+def ticket(request):
+    template_name='Ticket.html'
+    model=Users
+    context_object_name='user'
+    return render(request,'Ticket.html')

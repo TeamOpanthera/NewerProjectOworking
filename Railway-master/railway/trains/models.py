@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser,BaseUserManager,PermissionsMixin
+from django.contrib.auth.models import User
 # Create your models here.
 
 class Trains(models.Model):
@@ -24,6 +25,9 @@ class Users(AbstractUser):
     email = models.EmailField(null=True)
     first_name = models.CharField(null=True,max_length = 20)
     last_name = models.CharField(null=True,max_length = 20)
+    phone = models.CharField(null=True,max_length=10)
+    aadharid = models.CharField(null=True,max_length=4)
+    address = models.CharField(null=True, max_length=150)
     balance = models.IntegerField(default = 0)
     is_staff = models.BooleanField(default=False)
     USERNAME_FIELD = "username"
